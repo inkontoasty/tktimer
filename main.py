@@ -251,8 +251,8 @@ def loadcst(): # this was the final stretch yeeeee
         updatesummary()
         cubed = cube.totaltime()
         solves = cube.solves() # counter
-        grind_timevar = tk.StringVar(root, f"cubed {cube.fmtsecs(int(cubed))} ({cube.fmtsecs(int(sesscubed))})")
-        grind_solvevar = tk.StringVar(root, f"solve {solves} ({sessolves} sess)")
+        grind_timevar.set(f"cubed {cube.fmtsecs(int(cubed))} ({cube.fmtsecs(int(sesscubed))})")
+        grind_solvevar.set(f"solve {solves} ({sessolves} sess)")
         if solves: selectfirsttime()
         selecttime()
     except:
