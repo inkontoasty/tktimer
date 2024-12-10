@@ -7,7 +7,7 @@
 - draw scramble (actually good feature)
 - database using sqlite (totally very effecient code using it) (with one click copy times)
 - summary list/average calculation
-- load from cstimer (but not export cuz u wont need it) (breaks bottom bar until you do another solve idk why)
+- load from cstimer export to file (but not export cuz u wont need it)
 
 ## Use it
 1. Install python 3, using your package manager or at python.org
@@ -18,6 +18,7 @@
 
 ## Demo video
 oops i forgot previous and next scramble buttons on top left
+oh yea the bottom stats don't break when load from cstimer anymore
 https://github.com/user-attachments/assets/1e062c3f-a0c9-46a0-9c47-0a8e0de1f726
 
 ## Contacts
