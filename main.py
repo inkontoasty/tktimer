@@ -104,7 +104,7 @@ def selecttime(e=None): # on the listbox to change conf time frame
 def copyscram(): # on selected listbox item
     if not solves: return
     root.clipboard_clear()
-    root.clipboard_append(selsolvestats[3])
+    root.clipboard_append(selsolvestats[2])
     copyselscrambtn.config(activebackground='green')
     root.after(500,copyselscrambtn.config,{'activebackground':'black'})
 
