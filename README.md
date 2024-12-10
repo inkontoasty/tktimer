@@ -5,9 +5,9 @@
 - timer (that only works if you have autorepeat in your keyboard like in X window manager)
 - scramble generation (almost random move scrambles)
 - draw scramble (actually good feature)
-- database (with one click copy times)
+- database using sqlite (totally very effecient code using it) (with one click copy times)
 - summary list/average calculation
-- load from cstimer (but not export cuz u wont need it)
+- load from cstimer (but not export cuz u wont need it) (breaks bottom bar until you do another solve idk why)
 
 ## Use it
 1. Install python 3, using your package manager or at python.org
@@ -17,6 +17,7 @@
 5. `python main.py`, have fun
 
 ## Demo video
+oops i forgot previous and next scramble buttons on top left
 https://github.com/user-attachments/assets/1e062c3f-a0c9-46a0-9c47-0a8e0de1f726
 
 ## Contacts
