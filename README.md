@@ -17,7 +17,7 @@
 5. `python main.py`, have fun
 
 ## Demo video
-https://github.com/user-attachments/assets/f015144e-bb71-4d21-8208-809c9402e72b
+https://github.com/user-attachments/assets/1e062c3f-a0c9-46a0-9c47-0a8e0de1f726
 
 ## Contacts
 you can find me `inkontoasty` on `discord.com/cubing` 
