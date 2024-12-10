@@ -145,3 +145,4 @@ def loadfile(filename):
     con.commit()
 
 fmtsecs = lambda s:f'{s//86400}d {(s%86400)//3600}h {(s%3600)//60}m {s%60}s'
+
