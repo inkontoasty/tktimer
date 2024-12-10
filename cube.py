@@ -139,7 +139,6 @@ def loadfile(filename):
             sani += [(i[-1],i[0][1],
                   ''.join([chr(32 + TURNS.index(j[0])*3 + len(j)-1 + (j[-1]=='2')) for j in i[1].split()]),
                  [0,2000,-1].index(i[0][0]) ) for i in v]
-            print(sani)
     sani.sort(key=lambda i:i[0])
     cur.executemany("INSERT INTO times (during,time,scramble,judgement) VALUES(?, ?, ?, ?)",sani)
     con.commit()
