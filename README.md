@@ -22,4 +22,4 @@ oh yea the bottom stats don't break when load from cstimer anymore
 https://github.com/user-attachments/assets/1e062c3f-a0c9-46a0-9c47-0a8e0de1f726
 
 ## Contacts
-you can find me `inkontoasty` on `discord.com/cubing` 
+you can find me `inkontoasty` on `discord.com/invite/cubers` 
