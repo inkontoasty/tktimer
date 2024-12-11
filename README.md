@@ -19,6 +19,7 @@
 ## Demo video
 oops i forgot previous and next scramble buttons on top left
 oh yea the bottom stats don't break when load from cstimer anymore
+also it hides everything else except the timer when you start it now
 https://github.com/user-attachments/assets/1e062c3f-a0c9-46a0-9c47-0a8e0de1f726
 
 ## Contacts
