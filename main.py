@@ -1,6 +1,6 @@
-import cube
-import tkinter as tk # oh no bloat imports
-import tkinter.font as font # at least its built in right..
+import cube # here we goooo
+import tkinter as tk
+import tkinter.font as font
 import time
 from tkinter.filedialog import askopenfilename
 from datetime import datetime
@@ -46,6 +46,9 @@ fconftime.pack(side=tk.BOTTOM,expand=True,anchor='s')
 fsummary.pack(side=tk.TOP,expand=True,anchor='n')
 fcube.pack(side=tk.BOTTOM,anchor='s',fill=tk.BOTH)
 fleft.pack(side=tk.LEFT,fill=tk.Y)
+
+hide = tk.Label(root,bg='black') # hiding all elements on timer
+hide.place(relx=0,rely=0,relwidth=0,relheight=0)
 
 def copycurrentscram(): # functions for stuff
     root.clipboard_clear()
@@ -224,6 +227,7 @@ def spacedown(e):
         sesscubed += t-timerelease
         timing = False
         timerstr.set('{:.3f}'.format(round(t-timerelease,3)))
+        hide.place_forget()
         if is_last_scramble:
             scramble[:] = last_scramble
             is_last_scramble = False
@@ -236,6 +240,7 @@ def spacedown(e):
         grind_timevar.set(f"cubed {cube.fmtsecs(int(cubed))} ({cube.fmtsecs(int(sesscubed))})")
     else: # preparing timer
         if t - lastpress > .5:
+            hide.place(x=0,y=0,relwidth=1,relheight=1)
             timerstr.set('0.0')
             timerlabel.config(fg='lightgreen')
             timeready = True
