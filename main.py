@@ -1,6 +1,6 @@
-import cube # here we goooo
-import tkinter as tk
-import tkinter.font as font
+import cube
+import tkinter as tk # oh no bloat imports
+import tkinter.font as font # at least its built in right..
 import time
 from tkinter.filedialog import askopenfilename
 from datetime import datetime
@@ -232,6 +232,9 @@ def spacedown(e):
             scramble[:] = last_scramble
             is_last_scramble = False
         nextscram()
+        if timelist_selected.get() != 'time':
+            timelist_selected.set("time")
+            updatetimelist()
         timelist.insert(0, timerstr.get())
         cube.new(t-timerelease, last_scramble)
         selectfirsttime()
