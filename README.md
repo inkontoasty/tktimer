@@ -3,8 +3,8 @@
 
 ## Features
 - timer (that only works if you have autorepeat in your keyboard like in X window manager)
-- scramble generation (random state with random move fallback)
-- draw scramble (actually good feature)
+- scramble generation (random state if you install a package and random move fallback if you dont want to)
+- draw and play scramble (actually good feature)
 - database using sqlite (totally very effecient code using it) (with one click copy times)
 - summary list/average calculation
 - load from cstimer export to file (but not export cuz u wont need it)
