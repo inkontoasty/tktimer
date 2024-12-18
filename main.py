@@ -32,13 +32,16 @@ cubed = cube.totaltime()
 sesscubed = 0
 solves = cube.solves() # counter
 sessolves = 0
-grind_timevar = tk.StringVar(root, f"cubed {cube.fmtsecs(int(cubed))} ({cube.fmtsecs(int(sesscubed))})")
-grind_solvevar = tk.StringVar(root, f"solve {solves} ({sessolves} sess)")
+grind_timevar = tk.StringVar(root, f"cubed {cube.fmtsecs(int(cubed))} ({cube.fmtsecs(int(sesscubed))}) ")
+grind_solvevar = tk.StringVar(root, f"solve {solves} ({sessolves} sess) ")
 start = time.time()
+scramlen = len(last_scramble)
 drawcubemove = -1
+scrambuttons = []
 
 fscram,ftimelist,fgrindstats,fleft = [tk.Frame(root)for i in range(4)] # frames
 fscram.pack(side=tk.TOP,fill=tk.X) # nice spiralish pattern for pack
+fscramup,fscramdown = tk.Frame(fscram),tk.Frame(fscram)
 ftimelist.pack(side=tk.RIGHT,fill=tk.Y,expand=False) # but why should i use grid instead?
 fgrindstats.pack(side=tk.BOTTOM,fill=tk.X,expand=False) # i only get a couple million layout problems
 fsummary, fcube, fconftime = [tk.Frame(fleft)for n in range(3)] # could just leave them under root but looks ugly
@@ -49,6 +52,10 @@ fleft.pack(side=tk.LEFT,fill=tk.Y)
 
 hide = tk.Label(root,bg='black') # hiding all elements on timer
 hide.place(relx=0,rely=0,relwidth=0,relheight=0)
+tk.Label(fscramup).pack(side=tk.LEFT,expand=True)
+tk.Label(fscramup).pack(side=tk.RIGHT,expand=True)
+tk.Label(fscramdown).pack(side=tk.LEFT,expand=True)
+tk.Label(fscramdown).pack(side=tk.RIGHT,expand=True)
 
 def copycurrentscram(): # functions for stuff
     root.clipboard_clear()
@@ -59,7 +66,8 @@ def copycurrentscram(): # functions for stuff
 def cubegotomove(moveidx):
     global drawcubemove
     s = last_scramble if is_last_scramble else scramble
-    if 0 <= drawcubemove < 30:
+    if moveidx > scramlen: return
+    if 0 <= drawcubemove < scramlen:
         scrambuttons[drawcubemove].config(font=('TkDefaultFont',18))
     cube.reset() # you have to choose, between what is right, and what is easy
     for n in range(moveidx): # i choose easy
@@ -69,27 +77,43 @@ def cubegotomove(moveidx):
     drawscram()
 
 def prevscram():
-    global is_last_scramble, drawcubemove
+    global is_last_scramble, drawcubemove, scramlen
     is_last_scramble = True
     prevscrambtn['state'] = tk.DISABLED
     cube.reset()
-    for n,i in enumerate(last_scramble):
-        scrambuttons[n].config(text=i)
+    scramlen = len(last_scramble)
     drawcubemove = -1 # redraw cube on new scram
+    packscrambtns()
     end()
 
 def nextscram():
-    global is_last_scramble, scramble, drawcubemove
+    global is_last_scramble, scramble, drawcubemove, scramlen
     if not is_last_scramble:
         last_scramble[:] = scramble
         scramble = cube.scramble()
     is_last_scramble = False
     prevscrambtn['state'] = tk.NORMAL
     cube.reset()
-    for n,i in enumerate(scramble):
-        scrambuttons[n].config(text=i)
+    scramlen = len(scramble)
     drawcubemove = -1
+    packscrambtns()
     end()
+
+def packscrambtns():
+    global scrambuttons
+    s = last_scramble if is_last_scramble else scramble
+    for btn in scrambuttons:
+        btn.pack_forget()
+    scrambuttons.clear()
+    for n,t in enumerate(s[:scramlen//2]):
+        scrambuttons.append(tk.Button(fscramup,text=t,borderwidth=0,highlightthickness=0,
+            command=lambda x=n:cubegotomove(x)))
+    for n,t in enumerate(s[scramlen//2:]):
+        scrambuttons.append(tk.Button(fscramdown,text=t,borderwidth=0,highlightthickness=0,
+            command=lambda x=(n+scramlen//2):cubegotomove(x)))
+    for n,btn in enumerate(scrambuttons):
+        btn.pack(side=tk.LEFT,anchor='center')
+
 
 def selecttime(e=None): # on the listbox to change conf time frame
     global selsolvestats
@@ -158,12 +182,12 @@ def deltime():
         timelist.yview_moveto(a)
     else:
         statstr.set("no solves yet")
-    grind_solvevar.set(f"solve {solves} ({sessolves} sess)")
-    grind_timevar.set(f"cubed {cube.fmtsecs(int(cubed))} ({cube.fmtsecs(int(sesscubed))})")
+    grind_solvevar.set(f"solve {solves} ({sessolves} sess) ")
+    grind_timevar.set(f"cubed {cube.fmtsecs(int(cubed))} ({cube.fmtsecs(int(sesscubed))}) ")
 
 def begin(): # for cube scramble vis
     global drawcubemove
-    if 0 <= drawcubemove < 30:
+    if 0 <= drawcubemove < scramlen:
         scrambuttons[drawcubemove].config(font=('TkDefaultFont',18))
     drawcubemove = -1
     cube.reset()
@@ -171,9 +195,9 @@ def begin(): # for cube scramble vis
 
 def prev():
     global drawcubemove
-    if 0 <= drawcubemove < 30:
+    if 0 <= drawcubemove < scramlen:
         scrambuttons[drawcubemove].config(font=('TkDefaultFont',18))
-    if drawcubemove == 30:
+    if drawcubemove == scramlen:
         drawcubemove -= 1
     if drawcubemove >= 0:
         s = last_scramble[drawcubemove] if is_last_scramble else scramble[drawcubemove]
@@ -186,26 +210,26 @@ def prev():
 
 def next():
     global drawcubemove
-    if 0 <= drawcubemove < 30:
+    if 0 <= drawcubemove < scramlen:
         scrambuttons[drawcubemove].config(font=('TkDefaultFont',18))
-    if drawcubemove < 29:
+    if drawcubemove < scramlen-1:
         drawcubemove += 1
         s = last_scramble if is_last_scramble else scramble
         scrambuttons[drawcubemove].config(font=('TkDefaultFont',18,'bold'))
         cube.notate(s[drawcubemove])
         drawscram()
-    elif drawcubemove == 29: drawcubemove += 1
+    elif drawcubemove == scramlen-1: drawcubemove += 1
     else:
         begin()
 
 def end():
     global drawcubemove
     s = last_scramble if is_last_scramble else scramble
-    if 0 <= drawcubemove < 30:
+    if 0 <= drawcubemove < scramlen:
         scrambuttons[drawcubemove].config(font=('TkDefaultFont',18))
-    for n in range(29-drawcubemove,0,-1):
+    for n in range(scramlen-1-drawcubemove,0,-1):
         cube.notate(s[-n])
-    drawcubemove = 30
+    drawcubemove = scramlen
     drawscram()
 
 def spaceupfr():
@@ -328,20 +352,19 @@ def drawscram():
 timerlabel = tk.Label(root,textvariable=timerstr,font=("TkDefaultFont",100))
 timerlabel.place(anchor='center',relx=.5,rely=.5)
 
-fscram.grid_columnconfigure(list(range(1,16)), weight=1) # individual sections
+fscram.columnconfigure(1,weight=1)
+fscram.rowconfigure(0,weight=1)
 copyscrambtn = tk.Button(fscram,text='C',fg='yellow',command=copycurrentscram)
-copyscrambtn.grid(row=0,column=16,rowspan=2,sticky='NSW')
-scrambuttons = [tk.Button(fscram,text=i,borderwidth=0,highlightthickness=0,command=lambda x=n:cubegotomove(x))
-                for n,i in enumerate(last_scramble)]
-for n,i in enumerate(scrambuttons):
-    i.grid(row=n//15,column=1+(n%15),sticky='NSEW')
+copyscrambtn.grid(row=0,column=2,rowspan=2,sticky='NSW')
+fscramup.grid(row=0,column=1,sticky='NEW')
+fscramdown.grid(row=1,column=1,sticky='SEW')
 prevscrambtn = tk.Button(fscram,text='<',fg='cyan',command=prevscram,state=tk.DISABLED)
 prevscrambtn.grid(row=0,column=0,sticky='NSE') # add commands to prev and next
 tk.Button(fscram,text='>',fg='lime',command=nextscram).grid(row=1,column=0,sticky='NSE')
 
 timelist_scroll = tk.Scrollbar(ftimelist)
 timelist_option = tk.OptionMenu(ftimelist,timelist_selected,*AVGS,command=updatetimelist) # select avg to view
-timelist = tk.Listbox(ftimelist,width=8) # wow sizes in characters i like
+timelist = tk.Listbox(ftimelist,width=8,borderwidth=0,highlightthickness=0) # wow sizes in characters i like
 timelist.config(yscrollcommand=timelist_scroll.set) #geekforgeeks is only
 timelist_scroll.config(command=timelist.yview) #good at tkinter i swear
 timelist_option.pack(side=tk.TOP,fill=tk.X)
@@ -390,6 +413,7 @@ tk.Button(fconftime,text='+2',fg='orange',command=lambda:confirm(cube.PLUS2)).pa
 tk.Button(fconftime,text='dnf',fg='pink',command=lambda:confirm(cube.DNF)).pack(side=tk.LEFT,fill=tk.Y,expand=True)
 tk.Button(fconftime,text='del',fg='red',command=deltime).pack(side=tk.LEFT,fill=tk.Y,expand=True)
 
+prevscram()
 end()
 updatetimelist()
 updatesummary()
