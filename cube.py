@@ -88,17 +88,41 @@ def scramble(): # fun fact this takes ~8.5 ms per scramble
 
 try: # fix the a
     import kociemba # oh well non built in things
-    # you dont want to see the code that generated these
-    JPERMS=[{48: 5, 45: 8, 2: 20, 9: 11, 10: 14}, {43: 52, 42: 51, 53: 17, 35: 33, 34: 30}, {30: 21, 27: 18, 24: 6, 38: 44, 41: 43}, {37: 19, 38: 20, 18: 9, 8: 6, 7: 3}, {23: 32, 26: 35, 29: 51, 17: 15, 16: 12}, {50: 30, 53: 27, 33: 24, 44: 42, 43: 39}, {7: 41, 6: 44, 38: 27, 24: 18, 21: 19}, {25: 43, 24: 42, 44: 53, 33: 27, 30: 28}, {19: 10, 20: 11, 9: 45, 2: 8, 5: 7}, {3: 50, 0: 53, 47: 33, 42: 36, 39: 37}, {34: 39, 33: 36, 42: 0, 47: 53, 50: 52}, {16: 25, 15: 24, 26: 44, 27: 29, 28: 32}, {32: 48, 35: 45, 51: 2, 11: 17, 14: 16}, {14: 34, 17: 33, 35: 42, 53: 51, 52: 48}, {39: 1, 36: 2, 0: 11, 45: 47, 46: 50}, {46: 37, 47: 38, 36: 18, 6: 0, 3: 1}, {5: 23, 8: 26, 20: 29, 15: 9, 12: 10}, {1: 14, 2: 17, 11: 35, 51: 45, 48: 46}, {10: 46, 11: 47, 45: 36, 0: 2, 1: 5}, {52: 16, 51: 15, 17: 26, 29: 35, 32: 34}, {28: 12, 29: 9, 15: 8, 20: 26, 23: 25}, {21: 3, 18: 0, 6: 47, 36: 38, 37: 41}, {12: 7, 9: 6, 8: 38, 18: 20, 19: 23}, {41: 28, 44: 29, 27: 15, 26: 24, 25: 21}]
+    EPAIRS=[((0,0,1),(3,0,1)),((0,2,1),(2,0,1)),((0,1,0),(5,0,1)),((1,2,1),(3,2,1)),
+            ((1,1,2),(4,2,1)),((1,0,1),(2,2,1)),((1,1,0),(5,2,1)),((2,1,0),(5,1,2)),((2,1,2),(4,1,0)),
+            ((3,1,0),(4,1,2)),((3,1,2),(5,1,0))] # buffer (B in spleffz) not included
+    #corners in triples (UP,LEFT,BACK) of A piece when do Y perm
+    CORNERS=[(UP,2,2,RIGHT,0,0,FRONT,0,2),(RIGHT,2,0,DOWN,0,2,FRONT,2,2),(LEFT,0,2,UP,2,0,FRONT,0,0),
+             (FRONT,2,0,DOWN,0,0,LEFT,2,2),(BACK,2,0,DOWN,2,2,RIGHT,2,2),(LEFT,2,0,DOWN,2,0,BACK,2,2),
+             (RIGHT,0,2,UP,0,2,BACK,0,0)] # totally not generated manually
     def scramble(): # no sane me gonna implement 2 phase on my own
-        cubestr = [i for i in 'URFDLB' for j in range(9)] #umm its not str
-        for n in range(30):
-            for k,v in random.choice(JPERMS).items(): # yes random state means spamming Jb perms
-                cubestr[k],cubestr[v]=cubestr[v],cubestr[k] # swapping trick is so neat how i realised this only last week
+        reset()
+        edgeswaps = random.randint(1,30)
+        for n in range(edgeswaps):
+            (tf,ty,tx),(pf,py,px) = random.choice(EPAIRS)
+            if random.random()>.5: (tf,ty,tx),(pf,py,px)=(pf,py,px),(tf,ty,tx) 
+            cube[UP][1][2],cube[pf][py][px] = cube[pf][py][px],cube[UP][1][2] # spam t perms
+            cube[RIGHT][0][1],cube[tf][ty][tx] = cube[tf][ty][tx],cube[RIGHT][0][1]
+        if edgeswaps % 2: # parity, do a r perm
+            cube[LEFT][0][1],cube[BACK][0][1]=cube[BACK][0][1],cube[LEFT][0][1]
+            cube[UP][0][1],cube[UP][1][0]=cube[UP][1][0],cube[UP][0][1]
+        cornerswaps = random.randint(1,15)*2+edgeswaps
+        for n in range(cornerswaps):
+            a = random.randrange(len(CORNERS))
+            t1f,t1y,t1x,t2f,t2y,t2x,t3f,t3y,t3x = CORNERS[a]
+            for m in range(random.randrange(3)):
+                t1f,t1y,t1x,t2f,t2y,t2x,t3f,t3y,t3x = t2f,t2y,t2x,t3f,t3y,t3x,t1f,t1y,t1x
+            cube[UP][0][0],cube[t1f][t1y][t1x]=cube[t1f][t1y][t1x],cube[UP][0][0]
+            cube[LEFT][0][0],cube[t2f][t2y][t2x]=cube[t2f][t2y][t2x],cube[LEFT][0][0]
+            cube[BACK][0][2],cube[t3f][t3y][t3x]=cube[t3f][t3y][t3x],cube[BACK][0][2]
+        if edgeswaps%2:
+            cube[LEFT][0][1],cube[BACK][0][1]=cube[BACK][0][1],cube[LEFT][0][1]
+            cube[UP][0][1],cube[UP][1][0]=cube[UP][1][0],cube[UP][0][1]
+        cubestr = [TURNS[cube[f][y][x]] for f in [UP,RIGHT,FRONT,DOWN,LEFT,BACK] for y in range(3) for x in range(3)] #umm its not str
         solve = kociemba.solve(''.join(cubestr)).split(' ')[::-1] # gonna inverse the solve
+        reset()
         scramcube = [[[ cubestr['URFDLB'.index(f)*9+y*3+x] 
             for x in range(3) ] for y in range(3)] for f in TURNS]
-        reset()
         for n,i in enumerate(solve):
             notate(i)
             if cube == scramcube: # hmm empty scramble?
@@ -169,3 +193,4 @@ def loadfile(filename):
     con.commit()
 
 fmtsecs = lambda s:f'{s//86400}d {(s%86400)//3600}h {(s%3600)//60}m {s%60}s'
+
