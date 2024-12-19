@@ -1,5 +1,5 @@
 # TkTimer
- Offline rubix cube timer using only python built-ins
+ Offline rubik's cube timer using only python built-ins
 
 ## Features
 - timer (that only works if you have autorepeat in your keyboard like in X window manager)
