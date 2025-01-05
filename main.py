@@ -383,12 +383,13 @@ cubecanvas.bind("<Configure>",
               cubecanvas.config(width=e.width,height=e.width)])
 stickerpoints = [ # xy and yx chaos begins here
     [[[(50 + 7*x - 7*y,18 + 4*x + 4*y)] for x in range(4)] for y in range(4)],
-    [[[(50 + 7*x - 7*y,72 + 4*x + 4*y)] for x in range(4)] for y in range(4)],
+    [[[(29 + 7*x + 7*y,84 - 4*x + 4*y)] for x in range(4)] for y in range(4)],
     [[[(29 + 7*x, 30 + 9*y + 4*x)] for x in range(4)] for y in range(4)],
     [[[(75 + 7*x, 11 + 9*y + 4*x)] for x in range(4)] for y in range(4)],
     [[[(50 + 7*x, 42 + 9*y - 4*x)] for x in range(4)] for y in range(4)],
     [[[(4 + 7*x, 22 + 9*y - 4*x)] for x in range(4)] for y in range(4)]
 ]
+print(stickerpoints[1])
 arr = [[[cubecanvas.create_polygon([(sp[x][y],sp[x+1][y],sp[x+1][y+1],sp[x][y+1])],fill=COLS[n],outline='black')for x in range(3)] for y in range(3)]for n,sp in enumerate(stickerpoints)]
 cubecanvas.pack(side=tk.TOP,expand=True,fill=tk.X)
 tk.Button(fcube,text='<<',fg='red',command=begin).pack(side=tk.LEFT,fill=tk.X,expand=True)
